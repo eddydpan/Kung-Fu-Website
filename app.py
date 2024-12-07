@@ -17,8 +17,8 @@ def index():
     result = cursor.fetchone()
     row_count = result[0]
     
-    cursor.close()
-    conn.close()
+    # cursor.close()
+    # conn.close()
     return f"Number of users who have run KFPM: {row_count}"
 
 
