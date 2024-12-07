@@ -4,9 +4,9 @@ import sqlite3
 app = Flask(__name__)
 
 # Connect to SQLite database (or replace with another storage system)
-conn = sqlite3.connect("uuids.db", check_same_thread=False)
+conn = sqlite3.connect("device_fingerprints.db", check_same_thread=False)
 cursor = conn.cursor()
-cursor.execute("CREATE TABLE IF NOT EXISTS runs (uuid TEXT UNIQUE)")
+cursor.execute("CREATE TABLE IF NOT EXISTS runs (device_fingerprint TEXT UNIQUE)")
 
 
 @app.route("/")
@@ -25,15 +25,15 @@ def index():
 @app.route("/log", methods=["POST"])
 def log_uuid():
     data = request.json
-    unique_id = data.get("unique_id")
+    device_fingerprint = data.get("device_fingerprint")
 
     # Store the UUID in the database
     try:
-        cursor.execute("INSERT INTO runs (uuid) VALUES (?)", (unique_id,))
+        cursor.execute("INSERT INTO runs (device_fingerprint) VALUES (?)", (device_fingerprint,))
         conn.commit()
-        return jsonify({"status": "success", "message": "UUID logged"}), 200
+        return jsonify({"status": "success", "message": "Device fingerprint logged"}), 200
     except sqlite3.IntegrityError:  # Prevent duplicate UUIDs
-        return jsonify({"status": "duplicate", "message": "UUID already exists"}), 200
+        return jsonify({"status": "duplicate", "message": "Device fingerprint already exists"}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
