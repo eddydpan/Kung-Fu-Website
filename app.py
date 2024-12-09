@@ -1,10 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from db import get_db, init_app  # Import database functions
+import sqlite3
 
 app = Flask(__name__)
 app.config['DATABASE'] = "device_fingerprints.db"  # Path to the SQLite database
 
-# Initialize database functionality from db.py
 init_app(app)
 
 
@@ -14,8 +14,8 @@ def index():
     db = get_db()
     query = "SELECT COUNT(*) AS total FROM runs"
     result = db.execute(query).fetchone()
-    row_count = result["total"]  # Use column access with sqlite3.Row
-    return f"Number of users who have run KFPM: {row_count}"
+    row_count = result["total"] 
+    return render_template('log.html', count=row_count)
 
 
 @app.route("/log", methods=["POST"])
